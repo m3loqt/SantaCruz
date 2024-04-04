@@ -2,8 +2,10 @@ import React, { useEffect, useRef, useState } from "react";
 import Chart from "chart.js/auto";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../Sidebar";
-import { getDatabase, ref, onValue, get } from "firebase/database";
+import { getDatabase, ref, onValue, get, remove, child } from "firebase/database";
 import { initializeApp } from "firebase/app";
+import { useSpring, animated } from "react-spring";
+
 
 const firebaseConfig = {
   apiKey: "AIzaSyAOW8-bsgmp1NWhlj65Kc_URybr4UDmMRg",
@@ -36,6 +38,8 @@ const Dashboard = () => {
   });
   const [newProcessCount, setNewProcessCount] = useState(0);
 
+
+  
   useEffect(() => {
     const database = getDatabase(app);
     const approvedRef = ref(database, "Approved");
@@ -209,9 +213,47 @@ const Dashboard = () => {
     }
   }, [approvedCounts, deniedCounts]);
 
-  const handleLogout = () => {
-    navigate("/");
+  const handleClearAllFeedbacks = async () => {
+    try {
+      const database = getDatabase(app);
+      const feedbacksRef = ref(database, "Feedbacks");
+      await remove(feedbacksRef);
+      setFeedbacks([]);
+      alert("All feedbacks cleared successfully!");
+    } catch (error) {
+      console.error("Error clearing feedbacks:", error);
+      alert("An error occurred while clearing feedbacks. Please try again.");
+    }
   };
+   const handleRemoveFeedback = async (index) => {
+    try {
+      const database = getDatabase();
+      const feedbacksRef = ref(database, "Feedbacks");
+  
+      const snapshot = await get(feedbacksRef);
+      if (snapshot.exists()) {
+        const feedbacksData = snapshot.val();
+        const feedbackKeys = Object.keys(feedbacksData);
+        const feedbackToRemoveKey = feedbackKeys[index];
+        const feedbackToRemoveRef = child(feedbacksRef, feedbackToRemoveKey);
+        
+        await remove(feedbackToRemoveRef);
+        
+        // Animate removal
+        setFeedbacks((prevFeedbacks) => {
+          const newFeedbacks = [...prevFeedbacks];
+          newFeedbacks.splice(index, 1);
+          return newFeedbacks;
+        });
+      }
+    } catch (error) {
+      console.error("Error removing feedback:", error);
+      alert("An error occurred while removing feedback. Please try again.");
+    }
+  };
+
+  
+
 
   return (
     <div className="h-screen flex overflow-hidden">
@@ -222,7 +264,6 @@ const Dashboard = () => {
             <h1 className="text-2xl font-semibold">Dashboard</h1>
             <p className="text-gray-600">Good Day Admin!</p>
           </div>
-          
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 -mt-4">
           <div className="bg-white  rounded-lg shadow-md p-4">
@@ -279,12 +320,40 @@ const Dashboard = () => {
           >
             {/* Feedbacks */}
             <div className="bg-white rounded-lg shadow-md p-4">
-              <h2 className="text-xl font-semibold">Feedbacks</h2>
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-semibold">Feedbacks</h2>
+                <button
+                  onClick={handleClearAllFeedbacks}
+                  className="bg-jetblack hover:bg-red-600 text-white font-semibold px-4 py-2 rounded-md transition duration-300"
+                >
+                  Clear All
+                </button>
+              </div>
               <div className="mt-4">
                 {feedbacks.map((feedback, index) => (
-                  <div key={index} className="mb-4 border rounded-lg p-3">
+                  <div
+                    key={index}
+                    className="mb-4 border rounded-lg p-3 relative"
+                  >
+                    <button
+                      onClick={() => handleRemoveFeedback(index)}
+                      className="absolute top-0 right-0 text-jetblack hover:text-red-700 mt-1 mr-1"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                        className="w-6 h-6"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M5.47 5.47a.75.75 0 0 1 1.06 0L12 10.94l5.47-5.47a.75.75 0 1 1 1.06 1.06L13.06 12l5.47 5.47a.75.75 0 1 1-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 0 1-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 0 1 0-1.06Z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    </button>
                     <p className="font-semibold">Name: {feedback.name}</p>
-                    <p className="font-semibold">Email: {feedback.email}</p>
+                    <p>Email: {feedback.email}</p>
                     <p>Feedback: {feedback.feedback}</p>
                   </div>
                 ))}

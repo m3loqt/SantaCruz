@@ -1,0 +1,12 @@
+
+@keyframes paper-plane {
+    0% {
+      transform: rotate(0deg) translate(0, 0);
+      opacity: 1;
+    }
+    100% {
+      transform: rotate(360deg) translate(500px, -500px);
+      opacity: 0;
+    }
+  }
+  

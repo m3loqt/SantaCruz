@@ -78,6 +78,7 @@ const App = () => {
   const handleLogin = () => {
     setIsLoggedIn(true);
   };
+  document.title = "Santa Cruz";
 
   return (
     <React.StrictMode>
