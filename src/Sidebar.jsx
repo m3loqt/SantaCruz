@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import image from "./assets/image.jpg";
 import { FiLogOut } from 'react-icons/fi';
+import image from "./assets/logo.png";
+
 
 const Sidebar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -19,6 +20,7 @@ const Sidebar = () => {
   return (
     <div className="bg-newpri h-screen w-64 text-white absolute top-0 left-0">
       <div className="flex flex-col p-4">
+      <img src={image} alt="Logo" className="w-28 h-28 mt-2 "/> {/* Logo */}
         <h1 className="text-4xl font-bold p-2 mt-4">Santa Cruz</h1>
         <ul className="mt-6 space-y-2">
           <li className="flex items-center hover:bg-primary rounded-md p-2">

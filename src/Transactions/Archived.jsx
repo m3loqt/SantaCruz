@@ -91,7 +91,7 @@ const Archived = () => {
           {/* Table */}
           <div id="printable-content">
             {/* Header for printing */}
-            <h1 className="text-3xl mb-6 font-semibold text-center mt-8">Archived Transactions</h1>
+            <h1 className="text-3xl mb-6 font-semibold text-center ">Archived Transactions</h1>
             {/* Current date */}
             <p className="text-center mb-4">{currentDate}</p>
             <table className="w-full text-lg text-left rtl:text-right text-gray-600 dark:text-gray-400">

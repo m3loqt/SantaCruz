@@ -11,6 +11,7 @@ import {
 } from "react-icons/fa"; // Import the new icon
 import emailjs from "@emailjs/browser";
 import logo from "../assets/log.png";
+import signature from "../assets/signature.png"
 
 emailjs.init("xwRPlofu2gTI6nT-F");
 
@@ -157,8 +158,9 @@ const BIndigency = () => {
       &nbsp;<br />
       &nbsp;<br />
       &nbsp;<br />
-      <p style="font-weight: bold;">JEROME LIM</p>
-      <p>Punong Barangay</p>
+      <p style="font-weight: bold;">SAMPLE OFFICER</p>
+      <img src="${signature}" alt="Jerome Lim's Signature" style="max-width: 200px"/>
+      <p>Officer In Charge</p>
     </div>
   `;
 

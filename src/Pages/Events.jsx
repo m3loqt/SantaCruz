@@ -181,13 +181,7 @@ const Events = () => {
       <div className="flex-1 ml-64 bg-gray-100 p-6">
         <div className="flex justify-between items-center pb-6">
           <h1 className="text-xl font-bold">Events</h1>
-          <button
-            className="p-2 px-4 bg-newpri text-white
-            rounded-md hover:bg-blue-700 focus:outline-none"
-            onClick={() => navigate("/")}
-          >
-            Logout
-          </button>
+          
         </div>
 
         <div className="-mt-3 -mb-7 grid grid-cols-1 md:grid-cols-1 lg:grid-cols-4 gap-2">

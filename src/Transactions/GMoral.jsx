@@ -3,7 +3,8 @@ import { getDatabase, ref, get, push, remove } from "firebase/database";
 import Sidebar from "../Sidebar";
 import { FaCheck, FaTimes, FaPrint, FaUserCheck, FaCheckCircle, FaTimesCircle } from 'react-icons/fa'; // Import the new icons
 import emailjs from '@emailjs/browser';
-
+import logo from "../assets/log.png";
+import signature from "../assets/signature.png"
 emailjs.init("xwRPlofu2gTI6nT-F");
 
 const GMoral = () => {
@@ -120,6 +121,7 @@ const GMoral = () => {
       <div class="text-center" style="font-family: Arial, sans-serif; text-align: justify;">
       &nbsp;<br />
       &nbsp;<br /> 
+      <img src="${logo}" alt="Logo" style="margin: 0 auto; max-width: 100px;"/> 
       <p>Republic of the Philippines</p>
       <p>Province of Cebu</p>
       <p>Municipality of Cebu City</p>
@@ -135,8 +137,9 @@ const GMoral = () => {
         &nbsp;<br />
         &nbsp;<br />
         &nbsp;<br />
-        <p style="font-weight: bold;">JEROME LIM</p>
-        <p>Punong Barangay</p>
+        <p style="font-weight: bold;">SAMPLE OFFICER</p>
+      <img src="${signature}" alt="Jerome Lim's Signature" style="max-width: 200px"/>
+      <p>Officer In Charge</p>
       </div>
     `;
 

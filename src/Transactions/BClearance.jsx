@@ -10,6 +10,8 @@ import {
   FaTimesCircle,
 } from "react-icons/fa";
 import emailjs from "@emailjs/browser";
+import logo from "../assets/log.png";
+import signature from "../assets/signature.png"
 
 emailjs.init("xwRPlofu2gTI6nT-F");
 
@@ -145,6 +147,7 @@ const BClearance = () => {
     const certificationContent = `
       <div class="text-center" style="font-family: Arial, sans-serif; text-align: justify;">
         &nbsp;<br />
+        <img src="${logo}" alt="Logo" style="margin: 0 auto; max-width: 100px;"/>
         <p>Republic of the Philippines</p>
         <p>Province of Cebu</p>
         <p>Municipality of Cebu City</p>
@@ -164,8 +167,9 @@ const BClearance = () => {
         &nbsp;<br />
         &nbsp;<br />
         &nbsp;<br />
-        <p style="font-weight: bold;">JEROME LIM</p>
-        <p>Punong Barangay</p>
+        <p style="font-weight: bold;">SAMPLE OFFICER</p>
+      <img src="${signature}" alt="Jerome Lim's Signature" style="max-width: 200px"/>
+      <p>Officer In Charge</p>
       </div>
     `;
 
@@ -354,14 +358,14 @@ const BClearance = () => {
           <div className="bg-white p-8 rounded-lg max-w-md text-center">
             {Object.keys(verificationResults).map((index) => (
               <div key={index}>
-                {verificationResults[index] === 'CHECK' ? (
+                {verificationResults[index] === "CHECK" ? (
                   <div>
                     {/* Verified */}
                     <FaCheckCircle className="w-24 h-24 text-green-500 mx-auto mb-4" />
                     <p className="text-lg font-semibold mb-2">Verified</p>
                     <p>The applicant is a resident of the barangay!</p>
                   </div>
-                ) : verificationResults[index] === 'NO_CHECK' ? (
+                ) : verificationResults[index] === "NO_CHECK" ? (
                   <div>
                     {/* Not Verified */}
                     <FaTimesCircle className="w-24 h-24 text-red-500 mx-auto mb-4" />

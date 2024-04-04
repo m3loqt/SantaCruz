@@ -130,9 +130,9 @@ const Denied = () => {
 
         <div
           id="printable-content"
-          className="overflow-x-auto shadow-md sm:rounded-lg mt-4"
+          className="overflow-x-auto shadow-md sm:rounded-lg "
         >
-          <h1 className="text-3xl mb-6 font-semibold text-center mt-8">
+          <h1 className="text-3xl mb-6 font-semibold text-center">
             Denied Transactions
           </h1>
           <p className="text-center mb-4">{currentDate}</p>

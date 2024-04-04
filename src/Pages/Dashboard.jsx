@@ -35,41 +35,39 @@ const Dashboard = () => {
     gMoral: 0,
   });
   const [newProcessCount, setNewProcessCount] = useState(0);
-  
-    
 
   useEffect(() => {
     const database = getDatabase(app);
     const approvedRef = ref(database, "Approved");
     const deniedRef = ref(database, "Denied");
-    const indigencysss = ref (database, "Indigencies");
-    const gmoralsss = ref (database, "GMoral");
-    const clearsss = ref (database, "Clearances");
+    const indigencysss = ref(database, "Indigencies");
+    const gmoralsss = ref(database, "GMoral");
+    const clearsss = ref(database, "Clearances");
     let indigencyCountss = 0;
     let gmoralCountss = 0;
-     let clearanceCountss = 0;
+    let clearanceCountss = 0;
 
-     const fetchCounts = async () => {
+    const fetchCounts = async () => {
       const indigencySnapshot = await get(indigencysss);
       const gmoralSnapshot = await get(gmoralsss);
       const clearanceSnapshot = await get(clearsss);
-    
+
       if (indigencySnapshot.exists()) {
         indigencyCountss = Object.keys(indigencySnapshot.val()).length;
       }
-    
+
       if (gmoralSnapshot.exists()) {
         gmoralCountss = Object.keys(gmoralSnapshot.val()).length;
       }
-    
+
       if (clearanceSnapshot.exists()) {
         clearanceCountss = Object.keys(clearanceSnapshot.val()).length;
       }
-    
-      const totalFormsCount = indigencyCountss + gmoralCountss + clearanceCountss;
+
+      const totalFormsCount =
+        indigencyCountss + gmoralCountss + clearanceCountss;
       setNewProcessCount(totalFormsCount);
     };
-    
 
     fetchCounts();
 
@@ -217,71 +215,86 @@ const Dashboard = () => {
 
   return (
     <div className="h-screen flex overflow-hidden">
-      <Sidebar /> 
-      <div className="flex-1 ml-64 bg-gray-100 p-6"> 
-        <div className="flex justify-between items-center pb-6"> 
-          <div className="flex items-center space-x-4"> 
-            <h1 className="text-2xl font-semibold">Dashboard</h1> 
-            <p className="text-gray-600">Good Day Admin!</p> 
-          </div> 
-          <button 
-            className="p-2 px-4 bg-red-500 text-white rounded-md hover:bg-jetblack focus:outline-none" 
-            onClick={handleLogout} 
-          > 
-            Logout 
-          </button> 
-        </div> 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"> 
+      <Sidebar />
+      <div className="flex-1 ml-64 bg-gray-100 p-6">
+        <div className="flex justify-between items-center pb-6">
+          <div className="flex items-center space-x-4 mb-3">
+            <h1 className="text-2xl font-semibold">Dashboard</h1>
+            <p className="text-gray-600">Good Day Admin!</p>
+          </div>
+          
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 -mt-4">
           <div className="bg-white  rounded-lg shadow-md p-4">
             <p className="font-bold text-gray-700">Number of Events</p>
-            <h2 className="text-2xl font-semibold text-gray-900">{eventsCount}</h2>
+            <h2 className="text-2xl font-semibold text-gray-900">
+              {eventsCount}
+            </h2>
           </div>
           <div className="bg-white rounded-lg shadow-md p-4">
             <p className="font-bold text-gray-700">Forms to Process</p>
-            <h2 className="text-2xl font-semibold text-gray-900">{newProcessCount}</h2>
+            <h2 className="text-2xl font-semibold text-gray-900">
+              {newProcessCount}
+            </h2>
           </div>
           <div className="bg-white rounded-lg shadow-md p-4">
             <p className="font-bold text-gray-700">Approved Requests</p>
             <h2 className="text-2xl font-semibold text-gray-900">
-              {approvedCounts.indigencies + approvedCounts.clearances + approvedCounts.gMoral}
+              {approvedCounts.indigencies +
+                approvedCounts.clearances +
+                approvedCounts.gMoral}
             </h2>
           </div>
           <div className="bg-white rounded-lg shadow-md p-4">
             <p className="font-bold text-gray-700">Denied Requests</p>
             <h2 className="text-2xl font-semibold text-gray-900">
-              {deniedCounts.indigencies + deniedCounts.clearances + deniedCounts.gMoral}
+              {deniedCounts.indigencies +
+                deniedCounts.clearances +
+                deniedCounts.gMoral}
             </h2>
           </div>
-        </div> 
-        <div className="flex mt-6"> 
+        </div>
+        <div className="flex mt-6">
           <div className="flex-1 mr-6">
             {/* Chart  */}
-            <div className="  p-4"> 
-              <div className="-mt-5" style={{ maxWidth: "100%", margin: "0 auto" }}>
-                <canvas ref={chartRef} style={{ maxWidth: "100%", height: "175px" }}></canvas>
+            <div className="  p-4">
+              <div
+                className="-mt-5"
+                style={{ maxWidth: "100%", margin: "0 auto" }}
+              >
+                <canvas
+                  ref={chartRef}
+                  style={{
+                    maxWidth: "100%",
+                    height: "175px",
+                    marginTop: "-25px",
+                  }}
+                ></canvas>
               </div>
             </div>
-          </div> 
-          <div className="w-1/4 mt-6 overflow-y-auto" style={{ maxHeight: "650px" }}>
+          </div>
+          <div
+            className="w-1/4 mt-1 overflow-y-auto"
+            style={{ maxHeight: "650px" }}
+          >
             {/* Feedbacks */}
             <div className="bg-white rounded-lg shadow-md p-4">
               <h2 className="text-xl font-semibold">Feedbacks</h2>
               <div className="mt-4">
                 {feedbacks.map((feedback, index) => (
-                  <div key={index} className="mb-4"> 
+                  <div key={index} className="mb-4 border rounded-lg p-3">
                     <p className="font-semibold">Name: {feedback.name}</p>
                     <p className="font-semibold">Email: {feedback.email}</p>
-                    <p>Feedback: {feedback.feedback}</p> 
+                    <p>Feedback: {feedback.feedback}</p>
                   </div>
                 ))}
               </div>
             </div>
-          </div> 
-        </div> 
+          </div>
+        </div>
       </div>
     </div>
   );
-  
 };
 
 export default Dashboard;
