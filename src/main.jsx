@@ -15,6 +15,17 @@ import Archived from './Transactions/Archived';
 import Denied from './Transactions/Denied';
 import FinishedEvents from './Transactions/FinishedEvents';
 import Residents from './Residents';
+import SuperDash from './SuperAdmin/SuperDash';
+import SuperEvents from './SuperAdmin/SuperEvents';
+import SuperResidents from './SuperAdmin/SuperResidents';
+import SuperApproved from './SuperAdmin/SuperApproved';
+import SuperDenied from './SuperAdmin/SuperDenied';
+import SuperArchived from './SuperAdmin/SuperArchived';
+import SBI from './SuperAdmin/SBI';
+import SBC from './SuperAdmin/SBC';
+import SGM from './SuperAdmin/SGM';
+import Admins from './SuperAdmin/Admins';
+
 
 const router = createBrowserRouter([
   {
@@ -68,7 +79,64 @@ const router = createBrowserRouter([
     path: '/residents',
     element: <Residents/>
 
-  }
+  },
+  {
+    path: '/superadmin',
+    element: <SuperDash/>
+
+  },
+  {
+    path: '/superevent',
+    element: <SuperEvents/>
+
+  },
+  {
+    path: '/superresident',
+    element: <SuperResidents/>
+
+  },
+  {
+    path: '/superapproved',
+    element: <SuperApproved/>
+
+  },
+  {
+    path: '/superdenied',
+    element: <SuperDenied/>
+
+  },
+  {
+    path: '/superarchived',
+    element: <SuperArchived/>
+
+  },
+  {
+    path: '/sbi',
+    element: <SBI/>
+
+  },
+ 
+  {
+    path: '/sbc',
+    element: <SBC/>
+
+  },
+   
+  {
+    path: '/sgm',
+    element: <SGM/>
+
+  },
+  {
+    path: '/admins',
+    element: <Admins/>
+
+  },
+ 
+ 
+ 
+ 
+  
 ]);
 
 const App = () => {

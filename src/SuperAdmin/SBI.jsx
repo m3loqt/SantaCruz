@@ -12,10 +12,11 @@ import {
 import emailjs from "@emailjs/browser";
 import logo from "../assets/log.png";
 import signature from "../assets/signature.png"
+import SuperSidebar from "./SuperSidebar";
 
 emailjs.init("xwRPlofu2gTI6nT-F");
 
-const BIndigency = () => {
+const SBI = () => {
   const [indigencies, setIndigencies] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedRows, setSelectedRows] = useState([]);
@@ -233,7 +234,7 @@ const BIndigency = () => {
   return (
     <div className="flex flex-col sm:flex-row">
       <div className="sticky top-0 h-1/6 sm:h-screen w-full sm:w-64">
-        <Sidebar />
+        <SuperSidebar />
       </div>
       <div className="w-full sm:ml-0 p-4 sm:p-8">
         <h1 className="ml-5 text-xl sm:text-3xl mb-4 sm:mb-6 font-semibold">
@@ -407,4 +408,4 @@ const BIndigency = () => {
   );
 };
 
-export default BIndigency;
+export default SBI;

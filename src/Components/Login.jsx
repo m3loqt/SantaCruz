@@ -17,27 +17,40 @@ function Login() {
   // Function to handle login
   const handleLogin = async (event) => {
     event.preventDefault();
-
+  
     // Check if the user's answer matches the challenge
     if (!checkAnswer()) {
       setError('Incorrect challenge answer. Please try again.');
       generateChallenge();
       return;
     }
-
+  
     const db = getDatabase();
     const adminRef = ref(db, 'Admin');
-
+    const superAdminRef = ref(db, 'Super');
+  
     try {
-      const snapshot = await get(adminRef);
-      const adminData = snapshot.val();
-
-      // Check if the username and password match
-      if (adminData && adminData.Username === username && adminData.Password === password) {
-        navigate('/dashboard');
+      const adminSnapshot = await get(adminRef);
+      const superAdminSnapshot = await get(superAdminRef);
+  
+      const adminData = adminSnapshot.val();
+      const superAdminData = superAdminSnapshot.val();
+  
+      // Check if any admin matches the entered username
+      const matchedAdmin = Object.values(adminData).find(admin => admin.username === username);
+      
+      // If no admin matches the username or the password is incorrect, check super admin credentials
+      if (!matchedAdmin || matchedAdmin.password !== password) {
+        // Check if the username and password match for super admin
+        if (superAdminData && superAdminData.Username === username && superAdminData.Password === password) {
+          navigate('/superadmin');
+        } else {
+          setError('Incorrect username or password. Please try again.');
+          generateChallenge();
+        }
       } else {
-        setError('Incorrect username or password. Please try again.');
-        generateChallenge();
+        // If username and password are correct, navigate to appropriate dashboard
+        navigate('/dashboard');
       }
     } catch (error) {
       console.error('Error retrieving admin data:', error);
@@ -45,6 +58,7 @@ function Login() {
       generateChallenge();
     }
   };
+  
 
   // Function to generate a challenge
   const generateChallenge = () => {

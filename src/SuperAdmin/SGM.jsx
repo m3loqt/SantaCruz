@@ -1,171 +1,140 @@
 import React, { useState, useEffect } from "react";
 import { getDatabase, ref, get, push, remove } from "firebase/database";
 import Sidebar from "../Sidebar";
-import {
-  FaCheck,
-  FaTimes,
-  FaPrint,
-  FaUserCheck,
-  FaCheckCircle,
-  FaTimesCircle,
-} from "react-icons/fa";
-import emailjs from "@emailjs/browser";
+import { FaCheck, FaTimes, FaPrint, FaUserCheck, FaCheckCircle, FaTimesCircle } from 'react-icons/fa'; // Import the new icons
+import emailjs from '@emailjs/browser';
 import logo from "../assets/log.png";
 import signature from "../assets/signature.png"
-
+import SuperSidebar from "./SuperSidebar";
 emailjs.init("xwRPlofu2gTI6nT-F");
 
-const BClearance = () => {
-  const [clearances, setClearances] = useState([]);
+const SGM = () => {
+  const [morals, setMorals] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedRows, setSelectedRows] = useState([]);
   const [verificationResults, setVerificationResults] = useState({});
   const [verificationPopup, setVerificationPopup] = useState(false);
 
   useEffect(() => {
-    const fetchClearances = async () => {
+    const fetchMorals = async () => {
       try {
         const db = getDatabase();
-        const clearancesRef = ref(db, "Clearances");
-        const snapshot = await get(clearancesRef);
+        const moralsRef = ref(db, "GMoral");
+        const snapshot = await get(moralsRef);
 
-        const clearanceData = [];
+        const moralsData = [];
         snapshot.forEach((childSnapshot) => {
-          clearanceData.push({
-            id: childSnapshot.key,
-            ...childSnapshot.val(),
-          });
+          moralsData.push({ id: childSnapshot.key, ...childSnapshot.val() });
         });
-        setClearances(clearanceData);
+        setMorals(moralsData);
       } catch (error) {
-        console.error("Error fetching clearances:", error);
+        console.error("Error fetching morals:", error);
       }
     };
 
-    fetchClearances();
+    fetchMorals();
   }, []);
 
-  const filteredClearances = clearances.filter((clearance) =>
-    clearance.name.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredMorals = morals.filter((moral) =>
+    moral.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const handleApprove = async (index) => {
-    if (
-      window.confirm("Are you sure you want to approve this clearance request?")
-    ) {
-      const approvedData = filteredClearances[index];
-      const clearanceId = approvedData.id;
-
+    if (window.confirm("Are you sure you want to approve this good moral request?")) {
+      const approvedData = filteredMorals[index];
+      const moralId = approvedData.id;
+  
       // Add category information to the approved data
-      approvedData.category = "Barangay Clearance";
-      approvedData.price = "₱100.00"
-
+      approvedData.category = "Good Moral";
+  
       try {
         const db = getDatabase();
         const approvedRef = ref(db, "Approved");
-
+  
         await push(approvedRef, approvedData);
-
+  
         // Remove the approved row from the original node
-        const originalRef = ref(db, `Clearances/${clearanceId}`);
+        const originalRef = ref(db, `GMoral/${moralId}`);
         await remove(originalRef);
-
+  
         // Update state to reflect the removal of the approved row
-        setClearances(clearances.filter((_, i) => i !== index));
-
+        setMorals(morals.filter((_, i) => i !== index));
+  
         // Send email using EmailJS
         const templateParams = {
           name: approvedData.name,
-          email: approvedData.email,
-          category: approvedData.category,
-          price: approvedData.price
+          email: approvedData.email, 
+          category: approvedData.category
         };
-
-        await emailjs.send(
-          "service_dr2yedj",
-          "template_6m94ekc",
-          templateParams
-        );
-
+  
+        await emailjs.send("service_dr2yedj", "template_6m94ekc", templateParams);
+  
         alert("Email sent successfully!");
       } catch (error) {
-        console.error("Error approving clearance:", error);
+        console.error("Error approving moral:", error);
       }
     }
   };
 
   const handleDeny = async (index) => {
-    if (
-      window.confirm("Are you sure you want to deny this clearance request?")
-    ) {
-      const deniedData = filteredClearances[index];
-      const clearanceId = deniedData.id;
-
+    if (window.confirm("Are you sure you want to deny this good moral request?")) {
+      const deniedData = filteredMorals[index];
+      const moralId = deniedData.id;
+  
       // Add category information to the denied data
-      deniedData.category = "Barangay Clearance";
-
+      deniedData.category = "Good Moral";
+  
       try {
         const db = getDatabase();
         const deniedRef = ref(db, "Denied");
-
-        // Push the denied data to the Denied node
+  
+        // Update the denied node with the denied data
         await push(deniedRef, deniedData);
-
+  
         // Remove the denied row from the original node
-        const originalRef = ref(db, `Clearances/${clearanceId}`);
+        const originalRef = ref(db, `GMoral/${moralId}`);
         await remove(originalRef);
-
+  
         // Update state to reflect the removal of the denied row
-        setClearances(clearances.filter((_, i) => i !== index));
-
+        setMorals(morals.filter((_, i) => i !== index));
+  
         // Send email using EmailJS
         const templateParams = {
           name: deniedData.name,
-          email: deniedData.email,
-          category: deniedData.category,
+          email: deniedData.email, 
+          category: deniedData.category
         };
-
-        await emailjs.send(
-          "service_dr2yedj",
-          "template_sx8sevr",
-          templateParams
-        );
-
+  
+        await emailjs.send("service_dr2yedj", "template_sx8sevr", templateParams);
+  
         alert("Email sent successfully for denial!");
       } catch (error) {
-        console.error("Error denying clearance:", error);
+        console.error("Error denying moral:", error);
       }
     }
   };
 
   const printRow = (index) => {
-    const selectedClearance = filteredClearances[index];
-    const { name, age, gender, status } = selectedClearance;
-    const currentDate = new Date();
-    const formattedDate = `${currentDate.getDate()} of ${currentDate.toLocaleString(
-      "en-US",
-      { month: "long" }
-    )}, ${currentDate.getFullYear()}`;
-    const certificationContent = `
+    const selectedMoral = filteredMorals[index];
+    const { name, age, contact, email, purpose } = selectedMoral;
+    const currentDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  
+    const goodMoralLetterContent = `
       <div class="text-center" style="font-family: Arial, sans-serif; text-align: justify;">
+      &nbsp;<br />
+      &nbsp;<br /> 
+      <img src="${logo}" alt="Logo" style="margin: 0 auto; max-width: 100px;"/> 
+      <p>Republic of the Philippines</p>
+      <p>Province of Cebu</p>
+      <p>Municipality of Cebu City</p>
+      <p>BARANGAY SANTA CRUZ</p>
+      &nbsp;<br />
+      &nbsp;&nbsp;&nbsp;&nbsp; <p style="font-weight: bold;">OFFICE OF THE PUNONG BARANGAY</p>
+      &nbsp;<br />
+      <p style="font-weight: bold;">CERTIFICATE OF GOOD MORAL</p>
+      &nbsp;<br />
+        <p>This is to certify that <strong>${name}</strong> has been found to possess exemplary moral character and conduct.</p>
         &nbsp;<br />
-        <img src="${logo}" alt="Logo" style="margin: 0 auto; max-width: 100px;"/>
-        <p>Republic of the Philippines</p>
-        <p>Province of Cebu</p>
-        <p>Municipality of Cebu City</p>
-        <p>BARANGAY SANTA CRUZ</p>
-        &nbsp;<br />
-        &nbsp;&nbsp;&nbsp;&nbsp; <p style="font-weight: bold;">OFFICE OF THE PUNONG BARANGAY</p>
-        &nbsp;<br />
-        <p style="font-weight: bold;">CERTIFICATE OF CLEARANCE</p>
-        &nbsp;<br />
-        <p>To Whom It May Concern:</p>
-        &nbsp;<br />
-        <p>This is to certify that ${name}, of legal age, ${gender}, ${status}, Filipino, is a resident of this Barangay and has no pending legal obligations or responsibilities that may hinder his/her application for any purpose.</p>
-        &nbsp;<br />
-        <p>This certification is being issued upon the request of the above-named person for whatever legal purpose it may serve him/her best.</p>
-        &nbsp;<br />
-        <p>Issued this ${formattedDate} at the Office of the Punong Barangay, Barangay Santa Cruz, Cebu City, Philippines.</p>
+        <p>Given this ${currentDate} at the Office of the Punong Barangay, Barangay Santa Cruz, Cebu City, Philippines.</p>
         &nbsp;<br />
         &nbsp;<br />
         &nbsp;<br />
@@ -177,21 +146,20 @@ const BClearance = () => {
 
     const printWindow = window.open("", "_blank");
     printWindow.document.open();
-    printWindow.document.write(certificationContent);
+    printWindow.document.write(goodMoralLetterContent);
     printWindow.document.close();
 
-    // Print the content
     printWindow.print();
   };
 
   const handleVerify = async (index) => {
-    const selectedClearance = filteredClearances[index];
-    if (!selectedClearance || !selectedClearance.name) {
-      console.error("Error: Selected clearance or name is undefined.");
+    const selectedMoral = filteredMorals[index];
+    if (!selectedMoral || !selectedMoral.name) {
+      console.error("Error: Selected moral or name is undefined.");
       return;
     }
 
-    const nameToVerify = selectedClearance.name.toLowerCase();
+    const nameToVerify = selectedMoral.name.toLowerCase();
 
     try {
       const db = getDatabase();
@@ -239,13 +207,14 @@ const BClearance = () => {
     setVerificationPopup(false);
   };
 
+
   return (
     <div className="flex">
       <div className="sticky top-0 h-screen">
-        <Sidebar />
+        <SuperSidebar />
       </div>
       <div className="ml-64 p-8 w-full">
-        <h1 className="text-3xl mb-6 font-semibold">Clearance Requests</h1>
+        <h1 className="text-3xl mb-6 font-semibold">Good Moral Requests</h1>
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
           <div className="pb-6 bg-white dark:bg-gray-900">
             <label htmlFor="table-search" className="sr-only">
@@ -273,7 +242,7 @@ const BClearance = () => {
                 type="text"
                 id="table-search"
                 className="block pt-2 pb-2 ps-10 text-lg text-gray-900 border border-gray-300 rounded-lg w-96 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                placeholder="Search for appplicant"
+                placeholder="Search for applicant"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -289,19 +258,13 @@ const BClearance = () => {
                   Age
                 </th>
                 <th scope="col" className="px-4 py-4">
-                  Gender
-                </th>
-                <th scope="col" className="px-4 py-4">
                   Contact
                 </th>
                 <th scope="col" className="px-4 py-4">
                   Email
                 </th>
                 <th scope="col" className="px-4 py-4">
-                  Address
-                </th>
-                <th scope="col" className="px-4 py-4">
-                  Status
+                  Purpose
                 </th>
                 <th scope="col" className="px-4 py-4">
                   Category
@@ -312,40 +275,38 @@ const BClearance = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredClearances.map((clearance, index) => (
+              {filteredMorals.map((moral, index) => (
                 <tr
-                  key={clearance.id}
-                  className={index % 2 === 0 ? "bg-gray-100" : "bg-white"}
+                  key={moral.id}
+                  className={index % 2 === 0 ? 'bg-gray-100' : 'bg-white'}
                 >
-                  <td className="px-4 py-4">{clearance.name}</td>
-                  <td className="px-4 py-4">{clearance.age}</td>
-                  <td className="px-4 py-4">{clearance.gender}</td>
-                  <td className="px-4 py-4">{clearance.contact}</td>
-                  <td className="px-4 py-4">{clearance.email}</td>
-                  <td className="px-4 py-4">{clearance.address}</td>
-                  <td className="px-4 py-4">{clearance.status}</td>
-                  <td className="px-4 py-4">Barangay Clearance</td>{" "}
-                  {/* Display category here */}
-                  <td className="px-8 py-4">
-                    <div className="flex justify-center">
-                      <div className="flex space-x-4">
-                        <FaUserCheck
-                          className="w-6 h-6 text-blue-500 hover:text-blue-600 cursor-pointer"
-                          onClick={() => handleVerify(index)}
-                        />
-                        <FaCheck
-                          className="w-6 h-6 text-green-500 hover:text-green-600 cursor-pointer"
-                          onClick={() => handleApprove(index)}
-                        />
-                        <FaTimes
-                          className="w-6 h-6 text-red-500 hover:text-red-600 cursor-pointer"
-                          onClick={() => handleDeny(index)}
-                        />
-                        <FaPrint
-                          className="w-6 h-6 text-blue-500 hover:text-blue-600 cursor-pointer"
-                          onClick={() => printRow(index)}
-                        />
-                      </div>
+                  <td className="px-4 py-4">{moral.name}</td>
+                  <td className="px-4 py-4">{moral.age}</td>
+                  <td className="px-4 py-4">{moral.contact}</td>
+                  <td className="px-4 py-4">{moral.email}</td>
+                  <td className="px-4 py-4">{moral.purpose}</td>
+                  <td className="px-4 py-4">Good Moral</td>
+                  <td className="px-4 py-4">
+                    <div className="flex justify-center items-center space-x-4">
+                    <FaUserCheck
+                        className="w-6 h-6 text-blue-500 cursor-pointer"
+                        onClick={() => handleVerify(index)}
+                      />
+                      <FaCheck
+                        className="w-6 h-6 text-green-500 cursor-pointer"
+                        onClick={() => handleApprove(index)}
+                      />
+                      <FaTimes
+                        className="w-6 h-6 text-red-500 cursor-pointer"
+                        onClick={() => handleDeny(index)}
+                      />
+                      <button
+                        className="w-6 h-6 text-blue-500 cursor-pointer"
+                        onClick={() => printRow(index)}
+                      >
+                        <FaPrint className="mr-2" />
+                      </button>
+                     
                     </div>
                   </td>
                 </tr>
@@ -354,20 +315,21 @@ const BClearance = () => {
           </table>
         </div>
       </div>
-      {/* Verification Popup */}
+      {/* Verification Pop-up */}
       {verificationPopup && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-50">
           <div className="bg-white p-8 rounded-lg max-w-md text-center">
             {Object.keys(verificationResults).map((index) => (
               <div key={index}>
-                {verificationResults[index] === "CHECK" ? (
+                {verificationResults[index] === 'CHECK' ? (
                   <div>
+                    
                     {/* Verified */}
                     <FaCheckCircle className="w-24 h-24 text-green-500 mx-auto mb-4" />
                     <p className="text-lg font-semibold mb-2">Verified</p>
                     <p>The applicant is a resident of the barangay!</p>
                   </div>
-                ) : verificationResults[index] === "NO_CHECK" ? (
+                ) : verificationResults[index] === 'NO_CHECK' ? (
                   <div>
                     {/* Not Verified */}
                     <FaTimesCircle className="w-24 h-24 text-red-500 mx-auto mb-4" />
@@ -390,4 +352,4 @@ const BClearance = () => {
   );
 };
 
-export default BClearance;
+export default SGM;

@@ -12,10 +12,11 @@ import {
 import emailjs from "@emailjs/browser";
 import logo from "../assets/log.png";
 import signature from "../assets/signature.png"
+import SuperSidebar from "./SuperSidebar";
 
 emailjs.init("xwRPlofu2gTI6nT-F");
 
-const BClearance = () => {
+const SBC = () => {
   const [clearances, setClearances] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedRows, setSelectedRows] = useState([]);
@@ -242,7 +243,7 @@ const BClearance = () => {
   return (
     <div className="flex">
       <div className="sticky top-0 h-screen">
-        <Sidebar />
+        <SuperSidebar />
       </div>
       <div className="ml-64 p-8 w-full">
         <h1 className="text-3xl mb-6 font-semibold">Clearance Requests</h1>
@@ -390,4 +391,4 @@ const BClearance = () => {
   );
 };
 
-export default BClearance;
+export default SBC;
